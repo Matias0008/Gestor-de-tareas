@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block header %}
+
+<h1 style="font-size: 4em;" class="text-center">{% block title %}Mis tareas{% endblock %}</h1>
+
+
+{% if g.user %}
+    <div class="text-center">
+        <a class="action btn btn-primary rounded mb-4 " href="{{ url_for("todo.create") }}">Agregar</a>
+    </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block another %}
+<div class="container-fluid d-flex flex-column justify-content-center">
+        <form class="d-flex justify-content-center" method="GET">
+        <input class="form-control me-2" type="search" placeholder="Buscar tarea" aria-label="Buscar" name="buscar" id="buscar" 
+        value="{% if request.args.get('buscar') != None %}{{ request.args.get('buscar')}}{% endif %}">
+        <button class="btn btn-outline-success" type="submit">Buscar</button>
+      </form>
+<ul>
+        {% if not todos %}
+        <div class="alert alert-danger mt-2" style="margin-left: -30px" role="alert">
+        Error, no se encontro la tarea.
+        </div>
+        </div>
+        {% endif %}
+
+
+
+    {% for todo in todos %}
+
+
+        <li class="todo">
+            <div class="mt-2">
+                <h1>
+                    {% if todo["completed"] == 1 %}
+                        <strike>{{ todo["description"] }}</strike>
+                    {% else %}
+                        {{ todo["description"] }}
+                    {% endif %}
+                </h1>
+                <div class="about" style="font-weight: 600;">
+                    {{ todo["created_at"].strftime("%Y:%m:%d") }}
+                </div>
+                <a href="{{ url_for("todo.update", id=todo["id"]) }}" class="action btn btn-warning btn-sm rounded-pill">Editar</a>
+            </div>
+        </li>
+    {% if not loop.last %}
+        <hr>
+    {% endif %}
+    {% endfor %}
+</ul>
+</div>
+{% endblock %}
